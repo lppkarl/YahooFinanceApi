@@ -8,11 +8,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace YahooFinanceApi
 {
     public sealed partial class Yahoo
     {
+        public static CultureInfo Culture = CultureInfo.InvariantCulture;
         public static bool IgnoreEmptyRows { set { RowExtension.IgnoreEmptyRows = value; } }
 
         public static async Task<IReadOnlyList<Candle>> GetHistoricalAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, Period period = Period.Daily, CancellationToken token = default)
@@ -54,7 +56,7 @@ namespace YahooFinanceApi
         {
             using (var stream = await GetResponseStreamAsync(symbol, startTime, endTime, period, showOption.Name(), token).ConfigureAwait(false))
 			using (var sr = new StreamReader(stream))
-			using (var csvReader = new CsvReader(sr))
+			using (var csvReader = new CsvReader(sr,Culture))
 			{
                 csvReader.Read(); // skip header
 

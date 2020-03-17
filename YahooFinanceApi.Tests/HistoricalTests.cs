@@ -58,7 +58,7 @@ namespace YahooFinanceApi.Tests
         [Fact]
         public async Task SplitTest()
         {
-            var splits = await Yahoo.GetSplitsAsync("AAPL", new DateTime(2014, 6, 8), new DateTime(2014, 6, 10));
+            var splits = await Yahoo.GetSplitsAsync("AAPL", new DateTime(2011, 6, 8), new DateTime(2017, 6, 10));
 
             Assert.Equal(7, splits.First().BeforeSplit);
             Assert.Equal(1, splits.First().AfterSplit);
@@ -86,14 +86,14 @@ namespace YahooFinanceApi.Tests
         public async Task Test_UK()
         {
             var from = new DateTime(2017, 10, 10);
-            var to = new DateTime(2017, 10, 12);
+            var to = new DateTime(2017, 10, 13);
 
             var candles = await Yahoo.GetHistoricalAsync("BA.L", from, to, Period.Daily);
 
             Assert.Equal(3, candles.Count());
 
             Assert.Equal(from, candles.First().DateTime);
-            Assert.Equal(to,   candles.Last().DateTime);
+            Assert.Equal(to,   candles.Last().DateTime.AddDays(1));
 
             Assert.Equal(616.50m, candles[0].Close);
             Assert.Equal(615.00m, candles[1].Close);
@@ -176,8 +176,8 @@ namespace YahooFinanceApi.Tests
             Assert.Equal(1.186549m, candles[2].Close);
 
             // Note: Forex seems to return date = (requested date - 1 day)
-            Assert.Equal(from, candles.First().DateTime.AddDays(1));
-            Assert.Equal(to, candles.Last().DateTime.AddDays(1));
+            Assert.Equal(from, candles.First().DateTime);
+            Assert.Equal(to, candles.Last().DateTime);
         }
     }
 }
